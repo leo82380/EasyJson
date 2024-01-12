@@ -7,7 +7,7 @@ namespace EasyJson
 {
     public static class EasyToJson
     {
-        private static string localPath = Application.persistentDataPath + "/Json/";
+        private static readonly string LocalPath = Application.dataPath + "/Json/";
         /**
          * <summary>
          * Json 파일로 저장
@@ -18,18 +18,19 @@ namespace EasyJson
          */
         public static void ToJson<T>(T obj, string jsonFileName, bool prettyPrint = false)
         {
-            if (!Directory.Exists(localPath))
+            if (!Directory.Exists(LocalPath))
             {
                 Debug.Log("폴더가 존재하지 않습니다.");
                 Debug.Log("폴더를 생성합니다.");
-                Directory.CreateDirectory(localPath);
+                Directory.CreateDirectory(LocalPath);
+                Debug.Log("저장 경로: " + LocalPath);
             }
-            string path = localPath + jsonFileName + ".json";
+            string path = LocalPath + jsonFileName + ".json";
             string json = JsonUtility.ToJson(obj, prettyPrint);
             File.WriteAllText(path, json);
             Debug.Log(json);
         }
-        
+
         /**
          * <summary>
          * Json 파일을 읽어서 객체로 반환
@@ -39,7 +40,7 @@ namespace EasyJson
          */
         public static T FromJson<T>(string jsonFileName)
         {
-            string path = localPath + jsonFileName + ".json";
+            string path = LocalPath + jsonFileName + ".json";
             if (!File.Exists(path))
             {
                 Debug.Log("파일이 존재하지 않습니다.");
@@ -49,7 +50,7 @@ namespace EasyJson
             T obj = JsonUtility.FromJson<T>(json);
             return obj;
         }
-        
+
         /**
          * <summary>
          * List를 Json 파일로 저장
@@ -60,19 +61,19 @@ namespace EasyJson
          */
         public static void ListToJson<T>(List<T> list, string jsonFileName, bool prettyPrint = false)
         {
-            Debug.Log(localPath);
-            if (!Directory.Exists(localPath))
+            if (!Directory.Exists(LocalPath))
             {
                 Debug.Log("폴더가 존재하지 않습니다.");
                 Debug.Log("폴더를 생성합니다.");
-                Directory.CreateDirectory(localPath);
+                Directory.CreateDirectory(LocalPath);
+                Debug.Log("저장 경로: " + LocalPath);
             }
-            string path = Path.Combine(localPath, jsonFileName + ".json");
+            string path = Path.Combine(LocalPath, jsonFileName + ".json");
             string json = JsonConvert.SerializeObject(list, prettyPrint ? Formatting.Indented : Formatting.None);
             File.WriteAllText(path, json);
             Debug.Log(json);
         }
-        
+
         /**
          * <summary>
          * Json 파일을 읽어서 List로 반환
@@ -82,7 +83,12 @@ namespace EasyJson
          */
         public static List<T> ListFromJson<T>(string jsonFileName)
         {
-            string path = Path.Combine(localPath, jsonFileName + ".json");
+            string path = Path.Combine(LocalPath, jsonFileName + ".json");
+            if (!File.Exists(path))
+            {
+                Debug.Log("파일이 존재하지 않습니다.");
+                return default;
+            }
             string json = File.ReadAllText(path);
             List<T> obj = JsonConvert.DeserializeObject<List<T>>(json);
             return obj;
@@ -96,20 +102,21 @@ namespace EasyJson
          * <param name="jsonFileName">Json 파일 이름</param>
          * <param name="prettyPrint">Json을 보기 좋게 출력할 지 여부</param>
          */
-        public static void DictionaryToJson<T, U>(Dictionary<T, U> dictionary, string jsonFileName, bool prettyPrint = false)
+        public static void DictionaryToJson<T, TU>(Dictionary<T, TU> dictionary, string jsonFileName, bool prettyPrint = false)
         {
-            if (!Directory.Exists(localPath))
+            if (!Directory.Exists(LocalPath))
             {
                 Debug.Log("폴더가 존재하지 않습니다.");
                 Debug.Log("폴더를 생성합니다.");
-                Directory.CreateDirectory(localPath);
+                Directory.CreateDirectory(LocalPath);
+                Debug.Log("저장 경로: " + LocalPath);
             }
-            string path = localPath + jsonFileName + ".json";
+            string path = LocalPath + jsonFileName + ".json";
             string json = JsonConvert.SerializeObject(dictionary, prettyPrint ? Formatting.Indented : Formatting.None);
             File.WriteAllText(path, json);
             Debug.Log(json);
         }
-        
+
         /**
          * <summary>
          * Json 파일을 읽어서 Dictionary로 반환
@@ -117,11 +124,16 @@ namespace EasyJson
          * <param name="jsonFileName">Json 파일 이름</param>
          * <returns>Json 파일을 읽어서 만든 Dictionary</returns>
          */
-        public static Dictionary<T, U> DictionaryFromJson<T, U>(string jsonFileName)
+        public static Dictionary<T, TU> DictionaryFromJson<T, TU>(string jsonFileName)
         {
-            string path = localPath + jsonFileName + ".json";
+            string path = LocalPath + jsonFileName + ".json";
+            if (!File.Exists(path))
+            {
+                Debug.Log("파일이 존재하지 않습니다.");
+                return default;
+            }
             string json = File.ReadAllText(path);
-            Dictionary<T, U> obj = JsonConvert.DeserializeObject<Dictionary<T, U>>(json);
+            Dictionary<T, TU> obj = JsonConvert.DeserializeObject<Dictionary<T, TU>>(json);
             Debug.Log(json);
             return obj;
         }
