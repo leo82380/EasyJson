@@ -44,7 +44,10 @@ namespace EasyJson
             if (!File.Exists(path))
             {
                 Debug.Log("파일이 존재하지 않습니다.");
-                return default;
+                Debug.Log("파일을 생성합니다.");
+                T defaultObj = default;
+                ToJson(defaultObj, jsonFileName, true);
+                return defaultObj;
             }
             string json = File.ReadAllText(path);
             T obj = JsonUtility.FromJson<T>(json);
@@ -87,7 +90,10 @@ namespace EasyJson
             if (!File.Exists(path))
             {
                 Debug.Log("파일이 존재하지 않습니다.");
-                return default;
+                Debug.Log("파일을 생성합니다.");
+                List<T> defaultList = new List<T>();
+                ListToJson(defaultList, jsonFileName, true);
+                return defaultList;
             }
             string json = File.ReadAllText(path);
             List<T> obj = JsonConvert.DeserializeObject<List<T>>(json);
@@ -130,7 +136,10 @@ namespace EasyJson
             if (!File.Exists(path))
             {
                 Debug.Log("파일이 존재하지 않습니다.");
-                return default;
+                Debug.Log("파일을 생성합니다.");
+                Dictionary<T, TU> defaultDic = new Dictionary<T, TU>();
+                DictionaryToJson(defaultDic, jsonFileName, true);
+                return defaultDic;
             }
             string json = File.ReadAllText(path);
             Dictionary<T, TU> obj = JsonConvert.DeserializeObject<Dictionary<T, TU>>(json);
